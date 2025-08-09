@@ -1,10 +1,12 @@
-FROM postgres:10
+FROM postgres:latest
 
-ENV POSTGRES_DB=accounting-and-budgeting_database
-ENV POSTGRES_USER=accounting-and-budgeting_database
-ENV POSTGRES_PASSWORD=accounting-and-budgeting_database
+ENV POSTGRES_DB=accounting_and_budgeting
+ENV POSTGRES_USER=accounting_and_budgeting
+ENV POSTGRES_PASSWORD=accounting_and_budgeting
 
-RUN apt-get update -qq && \
-    apt-get install -y apt-utils postgresql-contrib
+# Copy all migration files to init directory
+# PostgreSQL will execute these in alphabetical order on first run
+COPY sql/V_acco*.sql /docker-entrypoint-initdb.d/
 
-COPY build/database_up.sql /docker-entrypoint-initdb.d/
+# Ensure the container uses UTF-8 encoding
+ENV LANG=en_US.utf8
